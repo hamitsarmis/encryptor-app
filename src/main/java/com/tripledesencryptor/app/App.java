@@ -52,12 +52,6 @@ public class App {
         }
     }
 
-    @FunctionalInterface
-    interface Operator {
-
-        public void operate();
-    }
-    
     /**
      *
      * @param filename
@@ -137,5 +131,5 @@ public class App {
     public static String getUsage() {
         return "Usage:\n1. String encryption & decryption\n2. File encryption\n3. File decryption";
     }
-    
+
 }
