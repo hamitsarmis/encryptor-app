@@ -1,9 +1,9 @@
 package com.tripledesencryptor.app;
 
+import org.bouncycastle.util.encoders.Base64;
+
 import java.security.MessageDigest;
 import java.security.Security;
-import java.util.Base64.Decoder;
-import java.util.Base64.Encoder;
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 
@@ -29,8 +29,8 @@ public class EncryptionManager {
      */
     public static String encrypt(String message, String pass) throws Exception {
         byte[] input = message.getBytes("IBM1026");
-        Encoder encoder = java.util.Base64.getEncoder();
-        byte[] encode = encoder.encode(encrypt(input, pass));
+        Base64 base64 = new Base64();
+        byte[] encode = base64.encode(encrypt(input, pass));
         return new String(encode);
     }
 
@@ -79,8 +79,8 @@ public class EncryptionManager {
      * @throws Exception any kind of exception may be thrown
      */
     public static String decrypt(String message, String pass) throws Exception {
-        Decoder decoder = java.util.Base64.getDecoder();
-        byte[] decode = decoder.decode(message);
+        Base64 base64 = new Base64();
+        byte[] decode = base64.decode(message);
         return new String(decrypt(decode, pass), "IBM1026");
     }
 }
