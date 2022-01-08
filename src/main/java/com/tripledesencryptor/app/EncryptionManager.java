@@ -29,8 +29,7 @@ public class EncryptionManager {
      */
     public static String encrypt(String message, String pass) throws Exception {
         byte[] input = message.getBytes("IBM1026");
-        Base64 base64 = new Base64();
-        byte[] encode = base64.encode(encrypt(input, pass));
+        byte[] encode = Base64.encode(encrypt(input, pass));
         return new String(encode);
     }
 
@@ -79,8 +78,7 @@ public class EncryptionManager {
      * @throws Exception any kind of exception may be thrown
      */
     public static String decrypt(String message, String pass) throws Exception {
-        Base64 base64 = new Base64();
-        byte[] decode = base64.decode(message);
+        byte[] decode = Base64.decode(message);
         return new String(decrypt(decode, pass), "IBM1026");
     }
 }
