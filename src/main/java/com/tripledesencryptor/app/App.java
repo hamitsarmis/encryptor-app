@@ -8,48 +8,50 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.RandomAccessFile;
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Hello world!
+ * App interaction logic
  *
  */
 public class App {
 
+    private interface IOptionExecute {
+        void Execute(String password) throws Exception;
+    }
+
     public static void main(String[] args) throws Exception {
         String choice;
-        ArrayList<String> availableOptions = new ArrayList<String>();
-        availableOptions.add("1");
-        availableOptions.add("2");
-        availableOptions.add("3");
-
-        while (availableOptions.indexOf((choice = readFromConsole(getUsage()))) != -1) {
-            String password = readFromConsole("Pass?");
-            if (choice.equals("1")) {
-                Boolean encrypt = readFromConsole("1. encrypt or 2. decyrpt ?").equals("1");
-                String passToEncrypt = readFromConsole("word?");
-                if (encrypt) {
-                    String enc = EncryptionManager.encrypt(passToEncrypt, password);
-                    System.out.println("Encryption Result: " + enc);
-                    System.out.println("Decryption Result: " + EncryptionManager.decrypt(enc, password));
-                }
-                else {
-                    String dec = EncryptionManager.decrypt(passToEncrypt, password);
-                    System.out.println("Decryption Result: " + dec);
-                    System.out.println("Encryption Result: " + EncryptionManager.encrypt(dec, password));
-                }
-            } else if (choice.equals("2") || choice.equals("3")) {
-                if (choice.equals("2")) {
-                    byte[] input = readFile(readFromConsole("Path to read?"));
-                    writeToFile(readFromConsole("Path to write?"), EncryptionManager.encrypt(input, password));
-                } else if (choice.equals("3")) {
-                    byte[] input = readFile(readFromConsole("Path to read?"));
-                    writeToFile(readFromConsole("Path to write?"), EncryptionManager.decrypt(input, password));
-                }
+        HashMap<String, IOptionExecute> availableOptions = new HashMap<>();
+        availableOptions.put("1", (password) -> {
+            Boolean encrypt = readFromConsole("1. encrypt or 2. decrypt ?").equals("1");
+            String passToEncrypt = readFromConsole("word?");
+            if (encrypt) {
+                String enc = EncryptionManager.encrypt(passToEncrypt, password);
+                System.out.println("Encryption Result: " + enc);
+                System.out.println("Decryption Result: " + EncryptionManager.decrypt(enc, password));
             }
+            else {
+                String dec = EncryptionManager.decrypt(passToEncrypt, password);
+                System.out.println("Decryption Result: " + dec);
+                System.out.println("Encryption Result: " + EncryptionManager.encrypt(dec, password));
+            }
+        });
+        availableOptions.put("2", (password) -> {
+            byte[] input = readFile(readFromConsole("Path to read?"));
+            writeToFile(readFromConsole("Path to write?"), EncryptionManager.encrypt(input, password));
+        });
+        availableOptions.put("3", (password) -> {
+            byte[] input = readFile(readFromConsole("Path to read?"));
+            writeToFile(readFromConsole("Path to write?"), EncryptionManager.decrypt(input, password));
+        });
+
+        while (availableOptions.containsKey((choice = readFromConsole(getUsage())))) {
+            availableOptions.get(choice).Execute(readFromConsole("Pass?"));
         }
+        System.out.println("Goodbye...");
     }
 
     /**
@@ -58,7 +60,7 @@ public class App {
      * @param output
      * @throws IOException
      */
-    public static void writeToFile(String filename, byte[] output) throws IOException {
+    private static void writeToFile(String filename, byte[] output) throws IOException {
         BufferedOutputStream bos;
         FileOutputStream fos = new FileOutputStream(new File(filename));
         bos = new BufferedOutputStream(fos);
@@ -72,7 +74,7 @@ public class App {
      * @return
      * @throws IOException
      */
-    public static byte[] readFile(String file) throws IOException {
+    private static byte[] readFile(String file) throws IOException {
         return readFile(new File(file));
     }
 
@@ -82,7 +84,7 @@ public class App {
      * @return
      * @throws IOException
      */
-    public static byte[] readFile(File file) throws IOException {
+    private static byte[] readFile(File file) throws IOException {
         // Open file
         RandomAccessFile f = new RandomAccessFile(file, "r");
         try {
@@ -106,7 +108,7 @@ public class App {
      * @param message
      * @return
      */
-    public static String readFromConsole(String message) {
+    private static String readFromConsole(String message) {
         System.out.println(message);
         BufferedReader br = null;
         try {
@@ -128,7 +130,7 @@ public class App {
      *
      * @return
      */
-    public static String getUsage() {
+    private static String getUsage() {
         return "Usage:\n1. String encryption & decryption\n2. File encryption\n3. File decryption";
     }
 
