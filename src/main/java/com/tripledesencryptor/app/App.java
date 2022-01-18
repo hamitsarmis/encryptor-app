@@ -54,12 +54,6 @@ public class App {
         System.out.println("Goodbye...");
     }
 
-    /**
-     *
-     * @param filename
-     * @param output
-     * @throws IOException
-     */
     private static void writeToFile(String filename, byte[] output) throws IOException {
         BufferedOutputStream bos;
         FileOutputStream fos = new FileOutputStream(new File(filename));
@@ -68,33 +62,18 @@ public class App {
         bos.close();
     }
 
-    /**
-     *
-     * @param file
-     * @return
-     * @throws IOException
-     */
     private static byte[] readFile(String file) throws IOException {
         return readFile(new File(file));
     }
 
-    /**
-     *
-     * @param file
-     * @return
-     * @throws IOException
-     */
     private static byte[] readFile(File file) throws IOException {
-        // Open file
         RandomAccessFile f = new RandomAccessFile(file, "r");
         try {
-            // Get and check length
             long longlength = f.length();
             int length = (int) longlength;
             if (length != longlength) {
                 throw new IOException("File size >= 2 GB");
             }
-            // Read file and return data
             byte[] data = new byte[length];
             f.readFully(data);
             return data;
@@ -103,11 +82,6 @@ public class App {
         }
     }
 
-    /**
-     *
-     * @param message
-     * @return
-     */
     private static String readFromConsole(String message) {
         System.out.println(message);
         BufferedReader br = null;
@@ -126,10 +100,6 @@ public class App {
         return "";
     }
 
-    /**
-     *
-     * @return
-     */
     private static String getUsage() {
         return "Usage:\n1. String encryption & decryption\n2. File encryption\n3. File decryption";
     }
